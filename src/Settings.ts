@@ -17,7 +17,7 @@ win.$trace.ajax = {
 };
 
 ['get', 'post', 'put', 'delete'].forEach(verb => {
-    AjaxSetting.logs[verb] = (localStorage.getItem('log' + verb) || 'true') == 'false';
+    AjaxSetting.logs[verb] = (localStorage.getItem('log' + verb) || 'true') != 'false';
     win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
     win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
 });
