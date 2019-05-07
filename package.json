@@ -1,0 +1,36 @@
+{
+  "name": "ajaxious",
+  "version": "1.0.2",
+  "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "build": "webpack -p --env.prod --max_old_space_size=512",
+    "postbuild": "tsc --emitDeclarationOnly --declaration",
+    "deploy": "npm run build & npm run postbuild & npm publish --access=public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soorena110/Ajaxious.git"
+  },
+  "keywords": [
+    "ajax",
+    "fetch",
+    "axios",
+    "ajaxious",
+    "easy ajax"
+  ],
+  "author": "MohammadReza Azarang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/soorena110/Ajaxious/issues"
+  },
+  "homepage": "https://github.com/soorena110/Ajaxious#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "typescript": "^3.4.5",
+    "uglifyjs-webpack-plugin": "^2.1.2",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1"
+  }
+}
