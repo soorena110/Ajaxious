@@ -1,7 +1,7 @@
 import {EventHandler} from "./Events";
 import {AjaxSetting} from "../Settings";
 import {logAjaxRequestResult} from "./AjaxLog";
-import {AjaxOptions, AjaxResult, AjaxStatus} from "../AjaxModels";
+import {AjaxOptions, AjaxResult, AjaxStatus, MethodTypes} from "../AjaxModels";
 
 export default class AjaxManager {
     private _eventHandler = new EventHandler();
@@ -43,7 +43,7 @@ export default class AjaxManager {
         return this.request(url, 'PUT', body, params, options);
     }
 
-    public async request(url: string, method: 'POST' | 'GET' | 'PUT' | 'DELETE',
+    public async request(url: string, method: MethodTypes,
                          body?: any, params?: any, options?: AjaxOptions) {
 
         if (!options || !options.isSilent)
@@ -53,7 +53,7 @@ export default class AjaxManager {
             options = {};
 
         try {
-            const retObj = await this._fetch(url, method, body, params);
+            const retObj = await this._fetch(url, method, body, params, options);
 
             if (!options || !options.isSilent) {
                 if (retObj.status == AjaxStatus.ok) {
@@ -83,7 +83,7 @@ export default class AjaxManager {
         }
     }
 
-    private async _fetch(url: string, method: 'POST' | 'GET' | 'PUT' | 'DELETE', body?: any, params?: any): Promise<AjaxResult> {
+    private async _fetch(url: string, method: MethodTypes, body?: any, params?: any, options?: AjaxOptions): Promise<AjaxResult> {
         let ajaxBody = undefined;
         if (method != 'GET')
             ajaxBody = JSON.stringify(body);
@@ -111,7 +111,9 @@ export default class AjaxManager {
             data: json
         };
 
-        logAjaxRequestResult(url, method, response, body, params, json);
+
+        if (!options || !options.noLog)
+            logAjaxRequestResult(url, method, response, body, params, json);
 
         return retObj;
     }

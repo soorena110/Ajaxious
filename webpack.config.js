@@ -22,7 +22,7 @@ module.exports = (env) => {
             extensions: ['*', '.ts']
         },
         output: {
-            path: path.join(__dirname, './lib'),
+            path: path.join(__dirname, './dist'),
             filename: 'index.js',
             library: 'Ajaxious',
             libraryTarget: "umd"

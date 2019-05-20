@@ -10,7 +10,7 @@
       "dom"
     ],
     "jsx": "react",
-    "outDir": "./lib",
+    "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
