@@ -3,6 +3,9 @@ import {AjaxSetting} from "../Settings";
 import {logAjaxRequestResult} from "./AjaxLog";
 import {AjaxOptions, AjaxResult, AjaxStatus, MethodTypes} from "../AjaxModels";
 
+if (!(window as any).ajaxiousUrlMapper)
+    (window as any).ajaxiousUrlMapper = (url: string) => url;
+
 export default class AjaxManager {
     private _eventHandler = new EventHandler();
 
@@ -126,6 +129,10 @@ export default class AjaxManager {
             const queryString = Object.getOwnPropertyNames(params).map(v => v + '=' + params[v]).join('&');
             completeUrl += (queryString != null && queryString != '' ? '?' + queryString : '');
         }
+
+        const urlMapper = (window as any).ajaxiousUrlMapper;
+        if (urlMapper)
+            return urlMapper(completeUrl);
 
         return completeUrl;
     }
