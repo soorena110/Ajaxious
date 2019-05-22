@@ -11,14 +11,14 @@ if (!win.$trace)
 win.$trace.ajax = {
     setting: AjaxSetting,
     setLogEnablity(verb: string, enablity: boolean) {
-        if (localStorage)
+        if (window.localStorage)
             localStorage.setItem('log' + verb, enablity ? 'true' : 'false');
         AjaxSetting.logs[verb] = enablity;
     },
 };
 
 ['get', 'post', 'put', 'delete'].forEach(verb => {
-    AjaxSetting.logs[verb] = (localStorage && localStorage.getItem('log' + verb) || 'true') != 'false';
+    AjaxSetting.logs[verb] = (window.localStorage && window.localStorage.getItem('log' + verb) || 'true') != 'false';
     win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
     win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
 });
