@@ -1,4 +1,6 @@
 export enum AjaxStatus {
+    cachedResult = -2,
+    emptyResult = -1,
     notSent = 0,
     ok = 200,
     badRequest = 400,
@@ -12,14 +14,26 @@ export interface AjaxResult {
 }
 
 export interface AjaxOptions {
-    noLog?: boolean;
+    neverLog?: boolean;
     dontTriggerEvents?: boolean;
     successMessage?: string;
     errorMessage?: string;
+}
+
+export interface AjaxRequest {
+    url: string;
+    method: MethodTypes;
+    body?: any;
+    params?: any;
+    options?: AjaxOptions;
+}
+
+export interface EventHandler {
+    request: AjaxRequest,
+    result: AjaxResult
 }
 
 export type EventTypes = 'onRequesting' | 'onSuccess' | 'onError' | 'onDone' | 'onUnauthorized' | string
 
 export type MethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE';
 
-export const ajaxEmptyPromise = new Promise((resolve) => resolve({status: -1, data: {}, response: {}} as AjaxResult));

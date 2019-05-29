@@ -1,13 +1,10 @@
-import {EventHandler} from "./Events";
+import {EventManager} from "./Events";
 import {AjaxSetting} from "./Settings";
 import {logAjaxRequestResult} from "./AjaxLog";
-import {AjaxOptions, AjaxResult, AjaxStatus, EventTypes, MethodTypes} from "./_models";
-
-if (!(window as any).ajaxiousUrlMapper)
-    (window as any).ajaxiousUrlMapper = (url: string) => url;
+import {AjaxOptions, AjaxRequest, AjaxResult, AjaxStatus, EventHandler, EventTypes, MethodTypes} from "./_models";
 
 export default class AjaxManager {
-    private _eventHandler = new EventHandler();
+    private _eventHandler = new EventManager();
 
     public setPath(path: string) {
         const lastChar = path[path.length - 1];
@@ -28,8 +25,8 @@ export default class AjaxManager {
         return AjaxSetting.header;
     }
 
-    public addEventListener(eventName: EventTypes, listener: (response: any) => void) {
-        this._eventHandler.addEventListener(eventName, listener);
+    public addEventListener(eventName: EventTypes, handler: EventHandler) {
+        this._eventHandler.addEventListener(eventName, handler);
     };
 
     public async post(url: string, body?: any, params?: any, options?: AjaxOptions) {
@@ -52,26 +49,12 @@ export default class AjaxManager {
                          body?: any, params?: any, options: AjaxOptions = {}) {
         const request = {url, method, body, params, options};
 
-        if (!options.dontTriggerEvents)
-            this._eventHandler.trigger('onRequesting', {request});
+        if (!request.options.dontTriggerEvents)
+            this._eventHandler.trigger('onRequesting', {request, result: {status: AjaxStatus.notSent, data: {}}});
 
         try {
-            const result = await this._sendRequestAndFetch(url, method, body, params, options);
-
-            if (!options.dontTriggerEvents) {
-                if (result.status == AjaxStatus.ok) {
-                    result.data.description = options.successMessage;
-                    this._eventHandler.trigger('onSuccess', {request, result});
-                }
-                else if (result.status / 100 == 4) {
-                    result.data.description = options.errorMessage;
-                    this._eventHandler.trigger('onError', {request, result});
-                }
-                if (result.status == AjaxStatus.unAuthorized)
-                    this._eventHandler.trigger('onUnauthorized', {request, result});
-                this._eventHandler.trigger(`on${result.status}`, {request, result})
-            }
-
+            const result = await this._sendRequestAndFetch(request);
+            this._raiseEvents(request, result);
             return result as AjaxResult;
         }
         catch (error) {
@@ -82,17 +65,33 @@ export default class AjaxManager {
             } as AjaxResult
         }
         finally {
-            if (!options.dontTriggerEvents)
+            if (!request.options || !request.options.dontTriggerEvents)
                 this._eventHandler.trigger('onDone');
         }
     }
 
-    private async _sendRequestAndFetch(url: string, method: MethodTypes, body?: any, params?: any, options: AjaxOptions = {}): Promise<AjaxResult> {
-        const ajaxBody = method != 'GET' ? JSON.stringify(body) : undefined;
-        const completeUrl = this._getCompleteUrl(url, params);
+    private _raiseEvents(request: AjaxRequest, result: AjaxResult) {
+        if (request.options && request.options.dontTriggerEvents)
+            return;
+
+        if (result.status == AjaxStatus.ok) {
+            this._eventHandler.trigger('onSuccess', {request, result});
+        }
+        else if (result.status / 100 == 4) {
+            this._eventHandler.trigger('onError', {request, result});
+        }
+        if (result.status == AjaxStatus.unAuthorized)
+            this._eventHandler.trigger('onUnauthorized', {request, result});
+        this._eventHandler.trigger(`on${result.status}`, {request, result})
+
+    }
+
+    private async _sendRequestAndFetch(request: AjaxRequest): Promise<AjaxResult> {
+        const ajaxBody = request.method != 'GET' ? JSON.stringify(request.body) : undefined;
+        const completeUrl = this._getCompleteUrl(request.url, request.params);
 
         const response = await fetch(completeUrl, {
-            method: method,
+            method: request.method,
             body: ajaxBody,
             headers: AjaxSetting.header,
         });
@@ -102,9 +101,16 @@ export default class AjaxManager {
         const retObj = {status: response.status, data, response};
 
 
-        if (!options.noLog) {
-            logAjaxRequestResult(url, method, response, data,
-                {body, params, options, completeUrl, response, ajaxiousSettings: AjaxSetting}
+        if (!request.options || !request.options.neverLog) {
+            logAjaxRequestResult(request.url, request.method, response, data,
+                {
+                    body: request.body,
+                    params: request.params,
+                    options: request.options,
+                    completeUrl,
+                    response,
+                    ajaxiousSettings: AjaxSetting
+                }
             );
         }
 
@@ -131,10 +137,6 @@ export default class AjaxManager {
             const queryString = Object.getOwnPropertyNames(params).map(v => v + '=' + params[v]).join('&');
             completeUrl += (queryString != null && queryString != '' ? '?' + queryString : '');
         }
-
-        const urlMapper = (window as any).ajaxiousUrlMapper;
-        if (urlMapper)
-            return urlMapper(completeUrl);
 
         return completeUrl;
     }
