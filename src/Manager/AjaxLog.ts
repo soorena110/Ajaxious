@@ -1,4 +1,4 @@
-import {AjaxSetting} from "../Settings";
+import {AjaxSetting} from "./Settings";
 
 function wordSudoColor(str: string) {
     let hash = 0;
@@ -8,11 +8,11 @@ function wordSudoColor(str: string) {
     return "00000".substring(0, 6 - c.length) + c;
 }
 
-export function logAjaxRequestResult(url: string, method: string, response: any, body: FormData, params: FormData, json?: any): any {
+export function logAjaxRequestResult(url: string, method: string, response: Response, data: any, info: any) {
     if (AjaxSetting.logs[method.toLowerCase()] == false)
         return;
 
-    const isError = json == undefined;
+    const isError = data == undefined;
     let style = 'color: darkcyan';
     if (isError)
         style = 'color: orange; background-color:#500;border';
@@ -23,15 +23,17 @@ export function logAjaxRequestResult(url: string, method: string, response: any,
 
 
     const keyWord = url.split('/').find(s => !!s.length) || ' ';
-    console.groupCollapsed(`%c  Ajax  %c %c${keyWord[0]}%c ${method}:${url} -> ${response.status} `,
-        'color:black;background:#01B8C3', '',
-        'padding:1px 5px;border-radius:30px;background:#' + wordSudoColor(keyWord),
-        style);
 
-    if (body) console.log('body:', body);
-    if (params) console.log('params:', params);
-    console.log('data:', json);
+    if (console.groupCollapsed && console.groupEnd)
+        console.groupCollapsed(`%c  Ajax  %c %c${keyWord[0]}%c ${method}:${url} -> ${response.status} `,
+            'color:black;background:#01B8C3', '',
+            'padding:1px 5px;border-radius:30px;background:#' + wordSudoColor(keyWord),
+            style);
 
-    console.log('more:', {AjaxSetting, response});
-    console.groupEnd();
+    console.log('data:', data);
+    console.log('info:', info);
+
+
+    if (console.groupCollapsed && console.groupEnd)
+        console.groupEnd();
 }

@@ -1,7 +1,7 @@
 import {EventHandler} from "./Events";
-import {AjaxSetting} from "../Settings";
+import {AjaxSetting} from "./Settings";
 import {logAjaxRequestResult} from "./AjaxLog";
-import {AjaxOptions, AjaxResult, AjaxStatus, MethodTypes} from "../AjaxModels";
+import {AjaxOptions, AjaxResult, AjaxStatus, MethodTypes} from "./_models";
 
 if (!(window as any).ajaxiousUrlMapper)
     (window as any).ajaxiousUrlMapper = (url: string) => url;
@@ -10,6 +10,9 @@ export default class AjaxManager {
     private _eventHandler = new EventHandler();
 
     public setPath(path: string) {
+        const lastChar = path[path.length - 1];
+        if (lastChar == '/' || lastChar == '\\')
+            path = path.substr(0, path.length - 1);
         AjaxSetting.path = path;
     }
 
@@ -47,18 +50,15 @@ export default class AjaxManager {
     }
 
     public async request(url: string, method: MethodTypes,
-                         body?: any, params?: any, options?: AjaxOptions) {
+                         body?: any, params?: any, options: AjaxOptions = {}) {
 
-        if (!options || !options.isSilent)
+        if (!options.isSilent)
             this._eventHandler.trigger('onRequesting');
 
-        if (!options)
-            options = {};
-
         try {
-            const retObj = await this._fetch(url, method, body, params, options);
+            const retObj = await this._sendRequestAndFetch(url, method, body, params, options);
 
-            if (!options || !options.isSilent) {
+            if (!options.isSilent) {
                 if (retObj.status == AjaxStatus.ok) {
                     retObj.data.description = options.successMessage;
                     this._eventHandler.trigger('onSuccess', retObj);
@@ -86,39 +86,40 @@ export default class AjaxManager {
         }
     }
 
-    private async _fetch(url: string, method: MethodTypes, body?: any, params?: any, options?: AjaxOptions): Promise<AjaxResult> {
-        let ajaxBody = undefined;
-        if (method != 'GET')
-            ajaxBody = JSON.stringify(body);
-
-        let completeUrl = this._getCompleteUrl(url, params);
+    private async _sendRequestAndFetch(url: string, method: MethodTypes, body?: any, params?: any, options: AjaxOptions = {}): Promise<AjaxResult> {
+        const ajaxBody = method != 'GET' ? JSON.stringify(body) : undefined;
+        const completeUrl = this._getCompleteUrl(url, params);
 
         const response = await fetch(completeUrl, {
             method: method,
-            body: ajaxBody ? ajaxBody : undefined,
+            body: ajaxBody,
             headers: AjaxSetting.header,
         });
 
-        let json = {} as any;
+        const data = await this._getDataFromResponse(response);
+
+        const retObj = {status: response.status, data, response};
+
+
+        if (!options.noLog) {
+            logAjaxRequestResult(url, method, response, data,
+                {body, params, options, completeUrl, response, ajaxiousSettings: AjaxSetting}
+            );
+        }
+
+        return retObj;
+    }
+
+    private async _getDataFromResponse(response: Response) {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1)
             try {
-                json = await response.json();
+                return await response.json();
             }
             catch {
             }
-        else json = await response.text();
 
-        const retObj = {
-            status: response.status,
-            data: json
-        };
-
-
-        if (!options || !options.noLog)
-            logAjaxRequestResult(url, method, response, body, params, json);
-
-        return retObj;
+        return await response.text();
     }
 
     private _getCompleteUrl(url: string, params: any) {

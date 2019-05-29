@@ -1,14 +1,14 @@
 {
   "name": "ajaxious",
-  "version": "1.0.8",
+  "version": "1.1.3",
   "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "webpack -p --env.prod --max_old_space_size=512",
+    "build": "npm run clean & webpack -p --env.prod",
     "postbuild": "tsc --emitDeclarationOnly --declaration",
-    "deploy": "npm run clean & npm run build & npm run postbuild & npm publish --access=public"
+    "deploy": "npm run build & npm run build:dev & npm run postbuild & npm publish --access=public"
   },
   "repository": {
     "type": "git",

@@ -8,6 +8,7 @@ export enum AjaxStatus {
 export interface AjaxResult {
     status: AjaxStatus;
     data: any;
+    response: Response;
 }
 
 export interface AjaxOptions {
@@ -19,4 +20,4 @@ export interface AjaxOptions {
 
 export type MethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE';
 
-export const ajaxEmptyPromise = new Promise((resolve) => resolve({status: -1, data: {}} as AjaxResult));
+export const ajaxEmptyPromise = new Promise((resolve) => resolve({status: -1, data: {}, response: {}} as AjaxResult));
