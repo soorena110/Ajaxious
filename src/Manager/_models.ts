@@ -28,10 +28,7 @@ export interface AjaxRequest {
     options?: AjaxOptions;
 }
 
-export interface EventHandler {
-    request: AjaxRequest,
-    result: AjaxResult
-}
+export type EventHandler = (request: AjaxRequest, result: AjaxResult) => void;
 
 export type EventTypes = 'onRequesting' | 'onSuccess' | 'onError' | 'onDone' | 'onUnauthorized' | string
 
