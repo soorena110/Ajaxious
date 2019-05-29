@@ -13,10 +13,12 @@ export interface AjaxResult {
 
 export interface AjaxOptions {
     noLog?: boolean;
-    isSilent?: boolean;
+    dontTriggerEvents?: boolean;
     successMessage?: string;
     errorMessage?: string;
 }
+
+export type EventTypes = 'onRequesting' | 'onSuccess' | 'onError' | 'onDone' | 'onUnauthorized' | string
 
 export type MethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE';
 

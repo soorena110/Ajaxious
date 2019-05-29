@@ -1,7 +1,7 @@
 import {EventHandler} from "./Events";
 import {AjaxSetting} from "./Settings";
 import {logAjaxRequestResult} from "./AjaxLog";
-import {AjaxOptions, AjaxResult, AjaxStatus, MethodTypes} from "./_models";
+import {AjaxOptions, AjaxResult, AjaxStatus, EventTypes, MethodTypes} from "./_models";
 
 if (!(window as any).ajaxiousUrlMapper)
     (window as any).ajaxiousUrlMapper = (url: string) => url;
@@ -28,7 +28,7 @@ export default class AjaxManager {
         return AjaxSetting.header;
     }
 
-    public addEventListener(eventName: 'onRequesting' | 'onSuccess' | 'onError' | 'onDone' | 'onUnauthorized', listener: (response: any) => void) {
+    public addEventListener(eventName: EventTypes, listener: (response: any) => void) {
         this._eventHandler.addEventListener(eventName, listener);
     };
 
@@ -37,7 +37,6 @@ export default class AjaxManager {
     }
 
     public async get(url: string, params?: any, options?: AjaxOptions) {
-        options = Object.assign({}, {isSilent: true}, options);
         return this.request(url, 'GET', undefined, params, options);
     }
 
@@ -51,37 +50,39 @@ export default class AjaxManager {
 
     public async request(url: string, method: MethodTypes,
                          body?: any, params?: any, options: AjaxOptions = {}) {
+        const request = {url, method, body, params, options};
 
-        if (!options.isSilent)
-            this._eventHandler.trigger('onRequesting');
+        if (!options.dontTriggerEvents)
+            this._eventHandler.trigger('onRequesting', {request});
 
         try {
-            const retObj = await this._sendRequestAndFetch(url, method, body, params, options);
+            const result = await this._sendRequestAndFetch(url, method, body, params, options);
 
-            if (!options.isSilent) {
-                if (retObj.status == AjaxStatus.ok) {
-                    retObj.data.description = options.successMessage;
-                    this._eventHandler.trigger('onSuccess', retObj);
+            if (!options.dontTriggerEvents) {
+                if (result.status == AjaxStatus.ok) {
+                    result.data.description = options.successMessage;
+                    this._eventHandler.trigger('onSuccess', {request, result});
                 }
-                else if (retObj.status / 100 == 4) {
-                    retObj.data.description = options.errorMessage;
-                    this._eventHandler.trigger('onError', retObj);
+                else if (result.status / 100 == 4) {
+                    result.data.description = options.errorMessage;
+                    this._eventHandler.trigger('onError', {request, result});
                 }
+                if (result.status == AjaxStatus.unAuthorized)
+                    this._eventHandler.trigger('onUnauthorized', {request, result});
+                this._eventHandler.trigger(`on${result.status}`, {request, result})
             }
-            if (retObj.status == AjaxStatus.unAuthorized)
-                this._eventHandler.trigger('onUnauthorized', retObj);
 
-
-            return retObj as AjaxResult;
+            return result as AjaxResult;
         }
-        catch {
+        catch (error) {
             return {
                 status: AjaxStatus.notSent,
-                data: {}
+                data: {},
+                response: error
             } as AjaxResult
         }
         finally {
-            if (!options || !options.isSilent)
+            if (!options.dontTriggerEvents)
                 this._eventHandler.trigger('onDone');
         }
     }
