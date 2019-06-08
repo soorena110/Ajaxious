@@ -1,4 +1,4 @@
-import {EventHandler} from "./_models";
+import {EventHandler} from "../models";
 
 export class EventManager {
     private _eventHandlers: { [key: string]: EventHandler[]; } = {};

@@ -1,4 +1,4 @@
-import {AjaxSetting} from "./Settings";
+import {AjaxSetting} from "../AjaxManager/Settings";
 
 function wordSudoColor(str: string) {
     let hash = 0;
@@ -31,9 +31,11 @@ export function logAjaxRequestResult(url: string, method: string, response: Resp
             style);
 
     console.log('data:', data);
-    console.log('info:', info);
+
+    if (console.groupCollapsed && console.groupEnd) console.groupCollapsed('info');
+    Object.keys(info).forEach(k => console.log(k, info[k]));
+    if (console.groupCollapsed && console.groupEnd) console.groupEnd();
 
 
-    if (console.groupCollapsed && console.groupEnd)
-        console.groupEnd();
+    if (console.groupCollapsed && console.groupEnd) console.groupEnd();
 }
