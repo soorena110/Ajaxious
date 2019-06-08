@@ -4,7 +4,7 @@ export const AjaxSetting = {
     logs: {} as any
 };
 
-const logSettingName = 'ajaxious.logSetting';
+const logSettingName = 'Ajaxious.logSetting';
 const loadPreviousLogSetting = () => {
     if (!window.localStorage)
         return {};
@@ -12,7 +12,7 @@ const loadPreviousLogSetting = () => {
     try {
         const logSettingString = window.localStorage.getItem(logSettingName);
         if (logSettingString)
-            return JSON.parse(logSettingName);
+            return JSON.parse(logSettingString);
     } catch {
     }
     return {};
@@ -20,7 +20,7 @@ const loadPreviousLogSetting = () => {
 const saveLogSetting = () => {
     if (window.localStorage)
         try {
-            const logStrings = JSON.parse(AjaxSetting.logs);
+            const logStrings = JSON.stringify(AjaxSetting.logs);
             window.localStorage.setItem(logSettingName, logStrings);
         } catch {
         }
@@ -36,14 +36,23 @@ win.$trace.ajax = {
     setLogEnablity(verb: string, enablity: boolean) {
         AjaxSetting.logs[verb] = enablity;
         saveLogSetting();
+        if (enablity) {
+            win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
+            delete win.$trace.ajax[verb + 'On']
+        } else {
+            win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
+            delete win.$trace.ajax[verb + 'Off']
+        }
     },
 };
 
 const previousLogSetting = loadPreviousLogSetting();
 ['get', 'post', 'put', 'delete'].forEach(verb => {
-    AjaxSetting.logs[verb] = (previousLogSetting[verb] || 'true') != 'false';
-    win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
-    win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
+    AjaxSetting.logs[verb] = previousLogSetting[verb] != undefined ? previousLogSetting[verb] : true;
+    if (AjaxSetting.logs[verb])
+        win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
+    else
+        win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
 });
 
 export default AjaxSetting;

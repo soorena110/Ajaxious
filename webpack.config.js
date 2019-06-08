@@ -1,11 +1,12 @@
 "use strict";
 
 const path = require('path');
+const Webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env) => {
     return {
-        entry: './src/index.ts',
+        entry: env.dev ? './src/index.ts' : './dev/index.ts',
         module: {
             rules: [
                 {
@@ -19,7 +20,7 @@ module.exports = (env) => {
             ]
         },
         resolve: {
-            extensions: ['*', '.ts']
+            extensions: ['*', '.ts', '.js']
         },
         output: {
             path: path.join(__dirname, './dist'),
@@ -27,7 +28,11 @@ module.exports = (env) => {
             library: 'Ajaxious',
             libraryTarget: "umd"
         },
-        plugins: [new UglifyJsPlugin()]
+        devServer: {
+            contentBase: './dev',
+            hot: true
+        },
+        plugins: [env.dev ? new Webpack.HotModuleReplacementPlugin() : new UglifyJsPlugin()]
     };
 
 };
