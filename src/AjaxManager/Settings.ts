@@ -20,7 +20,8 @@ const loadPreviousLogSetting = () => {
 const saveLogSetting = () => {
     if (window.localStorage)
         try {
-            window.localStorage.setItem(logSettingName, AjaxSetting.logs);
+            const logStrings = JSON.parse(AjaxSetting.logs);
+            window.localStorage.setItem(logSettingName, logStrings);
         } catch {
         }
 };
