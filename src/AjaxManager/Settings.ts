@@ -27,6 +27,8 @@ const saveLogSetting = () => {
 };
 
 
+const methods = ['get', 'post', 'put', 'delete'];
+
 const win = (window as any);
 if (!win.$trace)
     win.$trace = {};
@@ -44,15 +46,12 @@ win.$trace.ajax = {
             delete win.$trace.ajax[verb + 'Off']
         }
     },
+    setAllLogsEnablity(enablity: boolean) {
+        methods.forEach(verb => win.$trace.ajax.setLogEnablity(verb, enablity));
+    }
 };
 
 const previousLogSetting = loadPreviousLogSetting();
-['get', 'post', 'put', 'delete'].forEach(verb => {
-    AjaxSetting.logs[verb] = previousLogSetting[verb] != undefined ? previousLogSetting[verb] : true;
-    if (AjaxSetting.logs[verb])
-        win.$trace.ajax[verb + 'Off'] = () => win.$trace.ajax.setLogEnablity(verb, false);
-    else
-        win.$trace.ajax[verb + 'On'] = () => win.$trace.ajax.setLogEnablity(verb, true);
+methods.forEach(verb => {
+    win.$trace.ajax.setLogEnablity(verb, previousLogSetting[verb] != undefined ? previousLogSetting[verb] : true)
 });
-
-export default AjaxSetting;

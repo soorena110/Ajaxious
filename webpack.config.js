@@ -6,7 +6,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env) => {
     return {
-        entry: env.dev ? './src/index.ts' : './dev/index.ts',
+        entry: env.dev ? './src/_dev/index.ts' : './src/index.ts',
         module: {
             rules: [
                 {
@@ -29,7 +29,7 @@ module.exports = (env) => {
             libraryTarget: "umd"
         },
         devServer: {
-            contentBase: './dev',
+            contentBase: './src/_dev',
             hot: true
         },
         plugins: [env.dev ? new Webpack.HotModuleReplacementPlugin() : new UglifyJsPlugin()]

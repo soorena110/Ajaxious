@@ -17,8 +17,6 @@ export interface AjaxResult {
 export interface AjaxOptions {
     neverLog?: boolean;
     dontTriggerEvents?: boolean;
-    successMessage?: string;
-    errorMessage?: string;
     headers?: HeadersInit;
     urlType?: 'relative' | 'absolute'
 }
