@@ -14,16 +14,16 @@ export interface AjaxResult {
     response: Response;
 }
 
-export interface AjaxOptions {
+export type AjaxOptions = {
     neverLog?: boolean;
     dontTriggerEvents?: boolean;
     headers?: HeadersInit;
-    urlType?: 'relative' | 'absolute'
-}
+    urlType?: 'relative' | 'absolute';
+} | any;
 
 export interface AjaxRequest {
     url: string;
-    method: MethodTypes;
+    method: AjaxiousMethodTypes;
     body?: AjaxBody;
     params?: object;
     options?: AjaxOptions;
@@ -31,9 +31,19 @@ export interface AjaxRequest {
 
 export type AjaxBody = object | FormData;
 
-export type EventHandler = (request: AjaxRequest, result: AjaxResult) => void;
+export type AjaxiousEventHandler = (request: AjaxRequest, result: AjaxResult) => void;
 
-export type EventTypes = 'onRequesting' | 'onSuccess' | 'onError' | 'onDone' | 'onUnauthorized' | 'onError' | string
+export type AjaxiousEventTypes =
+    'onRequesting'
+    | 'onSuccess'
+    | 'onError'
+    | 'onDone'
+    | 'onUnauthorized'
+    | 'onError'
+    | string
 
-export type MethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
+export type AjaxiousMethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
+
+export const ajaxEmpty = {status: AjaxStatus.notSent, data: {}} as AjaxResult;
+export const ajaxEmptyPromise = new Promise((resolve) => resolve(ajaxEmpty));
 

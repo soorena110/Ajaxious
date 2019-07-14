@@ -6,15 +6,15 @@ import {
     AjaxRequest,
     AjaxResult,
     AjaxStatus,
-    EventHandler,
-    EventTypes
+    AjaxiousEventHandler,
+    AjaxiousEventTypes, ajaxEmpty
 } from "../models";
 import {sendRequestOrFetch} from "../Base/sendRequestFunctions";
 
 export default class AjaxManager {
     private _eventHandler = new EventManager();
 
-    private setAllLogOptions(enabled: boolean) {
+    public setAllLogOptions(enabled: boolean) {
         (window as any).$trace.ajax.setAllLogsEnablity(enabled);
     }
 
@@ -37,15 +37,15 @@ export default class AjaxManager {
         return AjaxSetting.header;
     }
 
-    public addEventListener(eventName: EventTypes, handler: EventHandler) {
+    public addEventListener(eventName: AjaxiousEventTypes, handler: AjaxiousEventHandler) {
         this._eventHandler.addEventListener(eventName, handler);
     };
 
-    public removeEventListener(eventName: EventTypes, handler: EventHandler) {
+    public removeEventListener(eventName: AjaxiousEventTypes, handler: AjaxiousEventHandler) {
         this._eventHandler.removeEventListener(eventName, handler)
     }
 
-    public removeAllListeners(eventName: EventTypes) {
+    public removeAllListeners(eventName: AjaxiousEventTypes) {
         this._eventHandler.removeAllListeners(eventName)
     }
 
@@ -67,10 +67,10 @@ export default class AjaxManager {
     }
 
     public async request(request: AjaxRequest) {
-        let result = undefined;
+        let result: AjaxResult = ajaxEmpty;
 
         if (!request.options || !request.options.dontTriggerEvents)
-            this._eventHandler.trigger('onRequesting', {request, result: {status: AjaxStatus.notSent, data: {}}});
+            this._eventHandler.trigger('onRequesting', request, result);
 
         try {
             result = await sendRequestOrFetch(request);
@@ -84,12 +84,12 @@ export default class AjaxManager {
                 data: {},
                 response: error
             } as AjaxResult;
-            this._eventHandler.trigger('onError', {request, result});
+            this._eventHandler.trigger('onError', request, result);
             return result
         }
         finally {
             if (!request.options || !request.options.dontTriggerEvents)
-                this._eventHandler.trigger('onDone', {request, result});
+                this._eventHandler.trigger('onDone', request, result);
         }
     }
 
@@ -97,15 +97,15 @@ export default class AjaxManager {
         if (request.options && request.options.dontTriggerEvents)
             return;
 
-        const eventArgs = {request, result};
+        const eventArgs = [request, result];
         if (result.status == AjaxStatus.ok)
-            this._eventHandler.trigger('onSuccess', eventArgs);
+            this._eventHandler.trigger('onSuccess', ...eventArgs);
         else if (result.status / 100 >= 4)
-            this._eventHandler.trigger('onError', eventArgs);
+            this._eventHandler.trigger('onError', ...eventArgs);
         if (result.status == AjaxStatus.unAuthorized)
-            this._eventHandler.trigger('onUnauthorized', eventArgs);
-        this._eventHandler.trigger(`on${result.status}`, eventArgs);
-        this._eventHandler.trigger(`on${Number(result.status / 100)}xx`, eventArgs)
+            this._eventHandler.trigger('onUnauthorized', ...eventArgs);
+        this._eventHandler.trigger(`on${result.status}`, ...eventArgs);
+        this._eventHandler.trigger(`on${Number(result.status / 100)}xx`, ...eventArgs)
     }
 
 }

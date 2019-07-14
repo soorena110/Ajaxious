@@ -1,5 +1,5 @@
 import {AjaxSetting} from "../AjaxManager/Settings";
-import {AjaxBody, AjaxOptions, AjaxRequest, AjaxResult, MethodTypes} from "../models";
+import {AjaxOptions, AjaxRequest, AjaxResult, AjaxiousMethodTypes} from "../models";
 import {logAjaxRequestResult} from "./AjaxLog";
 
 export const sendRequestOrFetch = async (request: AjaxRequest): Promise<AjaxResult> => {
@@ -49,7 +49,7 @@ const getCompleteUrl = (url: string, params?: object, options?: AjaxOptions) => 
     return completeUrl;
 };
 
-const getAjaxBody = (method: MethodTypes, body?: object): BodyInit | undefined => {
+const getAjaxBody = (method: AjaxiousMethodTypes, body?: object): BodyInit | undefined => {
     if (method == 'GET' || !body)
         return undefined;
 
@@ -61,7 +61,7 @@ const getAjaxBody = (method: MethodTypes, body?: object): BodyInit | undefined =
 };
 
 
-const getAjaxHeader = (options: { headers?: HeadersInit } | undefined, method: MethodTypes, body?: object): HeadersInit => {
+const getAjaxHeader = (options: { headers?: HeadersInit } | undefined, method: AjaxiousMethodTypes, body?: object): HeadersInit => {
     const header = {} as any;
     if (body && typeof body == 'object' && body.toString() != "[object FormData]")
         header['Content-Type'] = 'application/json';
