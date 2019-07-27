@@ -36,7 +36,7 @@ export const sendRequestOrFetch = async (request: AjaxRequest): Promise<AjaxResu
 const getCompleteUrl = (url: string, params?: object, options?: AjaxOptions) => {
     if (!params) params = {};
 
-    const urlType = options && options.urlType || (url.indexOf('://') != -1 ? 'absolute' : 'relative');
+    const urlType = options && options.urlType || (url.indexOf(':/') != -1 ? 'absolute' : 'relative');
 
     let completeUrl = url;
     if (urlType == 'relative')

@@ -1,6 +1,6 @@
 export const AjaxSetting = {
     path: '',
-    header: {} as HeadersInit,
+    header: {},
     logs: {} as any
 };
 

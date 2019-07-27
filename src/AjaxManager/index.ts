@@ -29,7 +29,7 @@ export default class AjaxManager {
         return AjaxSetting.path;
     }
 
-    public setHeader(header: HeadersInit) {
+    public setHeader(header: object) {
         AjaxSetting.header = header;
     }
 
