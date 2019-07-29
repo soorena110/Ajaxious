@@ -8,7 +8,7 @@ function wordSudoColor(str: string) {
     return "00000".substring(0, 6 - c.length) + c;
 }
 
-export function logAjaxRequestResult(url: string, method: string, response: Response, data: any, info: any) {
+export function logAjaxRequestResult(url: string, method: string, res: Response, data: any, info: any) {
     if (AjaxSetting.logs[method.toLowerCase()] == false)
         return;
 
@@ -16,26 +16,43 @@ export function logAjaxRequestResult(url: string, method: string, response: Resp
     let style = 'color: darkcyan';
     if (isError)
         style = 'color: orange; background-color:#500;border';
-    else if (Math.floor(response.status / 100) == 4)
+    else if (Math.floor(res.status / 100) == 4)
         style = 'color: orange';
-    else if (Math.floor(response.status / 100) == 5)
+    else if (Math.floor(res.status / 100) == 5)
         style = 'color: green';
 
 
     const keyWord = url.split('/').find(s => !!s.length) || ' ';
 
+    groupCollapsed(`%c  Ajax  %c %c${keyWord[0]}%c ${method}:${url} -> ${res.status} `,
+        'color:black;background:#01B8C3', '',
+        'padding:1px 5px;border-radius:30px;background:#' + wordSudoColor(keyWord),
+        style);
+
+    if (typeof data == 'object')
+        console.log('data:', data);
+    else {
+        groupCollapsed('data');
+        console.log('data:', data);
+        groupEnd();
+    }
+
+    Object.keys(info).forEach(k => {
+        groupCollapsed(`%c${k}`, 'color:deepskyblue');
+        console.table(info[k]);
+        groupEnd();
+    });
+
+    groupEnd();
+}
+
+function groupCollapsed(...args: any[]) {
     if (console.groupCollapsed && console.groupEnd)
-        console.groupCollapsed(`%c  Ajax  %c %c${keyWord[0]}%c ${method}:${url} -> ${response.status} `,
-            'color:black;background:#01B8C3', '',
-            'padding:1px 5px;border-radius:30px;background:#' + wordSudoColor(keyWord),
-            style);
-
-    console.log('data:', data);
-
-    if (console.groupCollapsed && console.groupEnd) console.groupCollapsed('info');
-    Object.keys(info).forEach(k => console.log(k, info[k]));
-    if (console.groupCollapsed && console.groupEnd) console.groupEnd();
+        console.groupCollapsed(...args);
+}
 
 
-    if (console.groupCollapsed && console.groupEnd) console.groupEnd();
+function groupEnd() {
+    if (console.groupCollapsed && console.groupEnd)
+        console.groupEnd();
 }
