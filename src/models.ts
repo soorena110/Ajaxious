@@ -1,7 +1,5 @@
 export enum AjaxStatus {
-    error = -3,
-    cachedResult = -2,
-    emptyResult = -1,
+    error = -1,
     notSent = 0,
     ok = 200,
     badRequest = 400,
@@ -39,10 +37,9 @@ export type AjaxiousEventTypes =
     | 'onError'
     | 'onDone'
     | 'onUnauthorized'
-    | 'onError'
     | string
 
-export type AjaxiousMethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
+export type AjaxiousMethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH' | string;
 
 export const ajaxEmpty = {status: AjaxStatus.notSent, data: {}} as AjaxResult;
 export const ajaxEmptyPromise = new Promise((resolve) => resolve(ajaxEmpty));

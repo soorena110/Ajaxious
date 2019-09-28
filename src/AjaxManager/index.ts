@@ -29,11 +29,11 @@ export default class AjaxManager {
         return AjaxSetting.path;
     }
 
-    public setHeader(header: object) {
+    public setHeaders(header: object) {
         AjaxSetting.header = header;
     }
 
-    public getHeader() {
+    public getHeaders() {
         return AjaxSetting.header;
     }
 
@@ -74,7 +74,7 @@ export default class AjaxManager {
 
         try {
             result = await sendRequestOrFetch(request);
-            this._raiseEvents(request, result);
+            this.raiseEvents(request, result);
             return result as AjaxResult;
         }
         catch (error) {
@@ -93,7 +93,7 @@ export default class AjaxManager {
         }
     }
 
-    private _raiseEvents(request: AjaxRequest, result: AjaxResult) {
+    public raiseEvents(request: AjaxRequest, result: AjaxResult) {
         if (request.options && request.options.dontTriggerEvents)
             return;
 
