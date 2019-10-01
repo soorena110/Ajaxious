@@ -22,7 +22,7 @@ export function logAjaxRequestResult(url: string, method: string, res: Response,
         style = 'color: green';
 
 
-    const keyWord = url.split('/').find(s => !!s.length) || ' ';
+    const keyWord = url.split('/').filter(s => !!s.length)[0] || ' ';
 
     groupCollapsed(`%c  Ajax  %c %c${keyWord[0]}%c ${method}:${url} -> ${res.status} `,
         'color:black;background:#01B8C3', '',
@@ -39,7 +39,7 @@ export function logAjaxRequestResult(url: string, method: string, res: Response,
 
     Object.keys(info).forEach(k => {
         groupCollapsed(`%c${k}`, 'color:deepskyblue');
-        console.table(info[k]);
+        (console.table || console.log)(info[k]);
         groupEnd();
     });
 

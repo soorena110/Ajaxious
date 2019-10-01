@@ -5,6 +5,18 @@ For example you can add subscribe to responses with 401 and 403 status code to g
 In another example, in a component can subscribe to 2xx and 4xx status code to show notifications.
 It is based on `fetch` method that is implemented in many browsers.
 
+[![npm version](https://img.shields.io/npm/v/ajaxious.svg?style=flat-square)](https://www.npmjs.org/package/ajaxious)
+[![install size](https://packagephobia.now.sh/badge?p=ajaxious)](https://packagephobia.now.sh/result?p=ajaxious)
+[![npm downloads](https://img.shields.io/npm/dm/ajaxious.svg?style=flat-square)](http://npm-stat.com/charts.html?package=ajaxious)
+
+
+## Browser Support
+
+![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
+--- | --- | --- | --- | --- | --- |
+Latest | Latest | Latest | Latest | Latest | Version 11 |
+
+
 ## How to use
 First for installation run this code :
 ```node
