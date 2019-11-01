@@ -1,5 +1,4 @@
 import {EventManager} from "../Base/Events";
-import {AjaxSetting} from "./Settings";
 import {
     AjaxOptions,
     AjaxBody,
@@ -12,29 +11,41 @@ import {
 import {sendRequestOrFetch} from "../Base/sendRequestFunctions";
 
 export default class AjaxManager {
+
     private _eventHandler = new EventManager();
 
     public setAllLogOptions(enabled: boolean) {
         (window as any).$trace.ajax.setAllLogsEnablity(enabled);
     }
 
-    public setPath(path: string) {
+    private _basePath = '';
+    set basePath(path: string) {
         const lastChar = path[path.length - 1];
         if (lastChar == '/' || lastChar == '\\')
             path = path.substr(0, path.length - 1);
-        AjaxSetting.path = path;
+        this._basePath = path;
     }
 
-    public getPath() {
-        return AjaxSetting.path;
+    get basePath() {
+        return this._basePath;
     }
 
-    public setHeaders(header: object) {
-        AjaxSetting.header = header;
+    private _baseHeaders: HeadersInit = {};
+    set baseHeaders(header: HeadersInit) {
+        this._baseHeaders = header;
     }
 
-    public getHeaders() {
-        return AjaxSetting.header;
+    get baseHeaders() {
+        return this._baseHeaders;
+    }
+
+    private _baseFetchOptions: RequestInit = {};
+    set baseFetchOptions(options: RequestInit) {
+        this._baseFetchOptions = options;
+    }
+
+    get baseFetchOptions() {
+        return this._baseFetchOptions;
     }
 
     public addEventListener(eventName: AjaxiousEventTypes, handler: AjaxiousEventHandler) {
@@ -73,11 +84,10 @@ export default class AjaxManager {
             this._eventHandler.trigger('onRequesting', request, result);
 
         try {
-            result = await sendRequestOrFetch(request);
+            result = await sendRequestOrFetch(this._basePath, this.baseHeaders, this.baseFetchOptions, request);
             this.raiseEvents(request, result);
             return result as AjaxResult;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Ajaxious has error !', error);
             const result = {
                 status: AjaxStatus.error,
@@ -86,8 +96,7 @@ export default class AjaxManager {
             } as AjaxResult;
             this._eventHandler.trigger('onError', request, result);
             return result
-        }
-        finally {
+        } finally {
             if (!request.options || !request.options.dontTriggerEvents)
                 this._eventHandler.trigger('onDone', request, result);
         }

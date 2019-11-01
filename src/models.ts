@@ -17,6 +17,7 @@ export type AjaxOptions = {
     dontTriggerEvents?: boolean;
     headers?: HeadersInit;
     urlType?: 'relative' | 'absolute';
+    fetchOptions: RequestInit;
 } | any;
 
 export interface AjaxRequest {

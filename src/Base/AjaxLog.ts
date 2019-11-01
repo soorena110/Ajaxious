@@ -1,4 +1,4 @@
-import {AjaxSetting} from "../AjaxManager/Settings";
+import {traceLogger} from "./traceLogger";
 
 function wordSudoColor(str: string) {
     let hash = 0;
@@ -9,7 +9,7 @@ function wordSudoColor(str: string) {
 }
 
 export function logAjaxRequestResult(url: string, method: string, res: Response, data: any, info: any) {
-    if (AjaxSetting.logs[method.toLowerCase()] == false)
+    if (traceLogger.get(method.toLowerCase()))
         return;
 
     const isError = data == undefined;
