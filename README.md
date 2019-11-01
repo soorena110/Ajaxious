@@ -6,8 +6,9 @@ In another example, in a component can subscribe to 2xx and 4xx status code to s
 It is based on `fetch` method that is implemented in many browsers.
 
 [![npm version](https://img.shields.io/npm/v/ajaxious.svg?style=flat-square)](https://www.npmjs.org/package/ajaxious)
-[![install size](https://packagephobia.now.sh/badge?p=ajaxious)](https://packagephobia.now.sh/result?p=ajaxious)
+[![install size](https://badgen.net/bundlephobia/min/ajaxious)](https://bundlephobia.com/result?p=ajaxious)
 [![npm downloads](https://img.shields.io/npm/dm/ajaxious.svg?style=flat-square)](http://npm-stat.com/charts.html?package=ajaxious)
+[![npm total downloads](https://badgen.net/npm/dt/ajaxious)](http://npm-stat.com/charts.html?package=ajaxious)
 
 
 ## Browser Support

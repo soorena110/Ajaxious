@@ -1,6 +1,6 @@
 {
   "name": "ajaxious",
-  "version": "2.6.0",
+  "version": "2.7.2",
   "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -9,7 +9,7 @@
     "start": "webpack-dev-server -d --env.dev",
     "build": "npm run clean & webpack -p --env.prod",
     "postbuild": "tsc --emitDeclarationOnly --declaration",
-    "deploy": "npm run build & npm run build:dev & npm run postbuild & npm publish --access=public"
+    "deploy": "npm run build & npm run postbuild & npm publish --access=public"
   },
   "repository": {
     "type": "git",
