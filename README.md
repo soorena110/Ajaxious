@@ -29,8 +29,8 @@ To use `Ajaxious` can do this :
 ```js
 import Ajaxious from "ajaxious";
 
-Ajaxious.setPath('http://host.com/api');
-Ajaxious.setHeaders({"x-token" : token})
+Ajaxious.basePath = 'http://host.com/api';
+Ajaxious.baseHeaders = {"x-token" : token}
 
 Ajaxious.get("tasks"); // to fetch data from "http://host.com/api/tasks" with
                        // GET method and with specified headers.
@@ -65,7 +65,7 @@ Url can contain url params, but we recommend you to use `params` parameter to do
  ```js
 Ajaxious.get('http://host.com/api/employees'); // absolute url
 
-Ajaxious.setPath('http://host.com/api'); // set base url to 'http://host.com/api'.
+Ajaxious.basePath = 'http://host.com/api'; // set base url to 'http://host.com/api'.
 Ajaxious.get('/employees'); // relative url, this is as same as get request.
 Ajaxious.get('employees'); // relative url, no change, just we removed "/" from relative url.
 ```
@@ -202,27 +202,27 @@ so you always should check status code in `.then(result => ... )`.
 
 
 
-## `Ajaxious` methods
+## `Ajaxious` properties and methods
 
-#### `Ajaxious.setPath`
+#### `Ajaxious.basePath`
 Is used to set base url every request.
 
 ```js
 Ajaxious.get("tasks"); // to fetch data from "tasks" with no base url
 
-Ajaxious.setPath('http://host.com/api');
+Ajaxious.basePath = 'http://host.com/api';
 Ajaxious.get("tasks"); // to fetch data from "http://host.com/api/tasks"
 ```
 
-#### `Ajaxious.getPath`
+#### `Ajaxious.basePath`
 Is used to get base url.
 
-#### `Ajaxious.setHeaders`
+#### `Ajaxious.baseHeaders`
 Is used to set base headers for every request.
 
 ```js
-Ajaxious.setPath('http://host.com/api');
-Ajaxious.setHeaders({"x-token" : token})
+Ajaxious.basePath = 'http://host.com/api';
+Ajaxious.baseHeaders = {"x-token" : token}
 
 Ajaxious.get("tasks"); // to fetch data from "http://host.com/api/tasks" with
                        // GET method and with headers equal to {"x-token" : token}.
@@ -231,8 +231,8 @@ Ajaxious.get("tasks"); // to fetch data from "http://host.com/api/tasks" with
 You can add header(s) or override base headers for a request via `options.headers`.
 
 ```js
-Ajaxious.setPath('http://host.com/api');
-Ajaxious.setHeaders({"x-token" : token})
+Ajaxious.basePath = 'http://host.com/api';
+Ajaxious.baseHeaders = {"x-token" : token};
 
 Ajaxious.get("tasks", undefined, {
     headers:{header1 : 'header1'}
@@ -241,7 +241,7 @@ Ajaxious.get("tasks", undefined, {
 
 Ajaxious.get("tasks", undefined, {
     headers:{
-        "x-token" : overRidedToken
+        "x-token" : overridenToken
         header1 : 'header1',
     }
 }); // to fetch data from "http://host.com/api/tasks" with GET method and
@@ -249,8 +249,29 @@ Ajaxious.get("tasks", undefined, {
 
 ```
 
-#### `Ajaxious.getHeaders`
+#### `Ajaxious.baseHeaders`
 Is used to get base headers.
+
+
+#### `Ajaxious.baseFetchOptions`
+Is used to set base fetch options every request.
+Fetch options are the options related to `fetch` params, for example `cache`, `mode`, etc.
+(see [Using Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+
+```js
+Ajaxious.get("tasks"); // to fetch data without below options
+
+Ajaxious.baseFetchOptions = {
+    mode: 'no-cors',
+    cache: 'no-cache',
+    credentials: 'include' 
+};
+Ajaxious.get("tasks"); // to fetch data with above options
+```
+
+#### `Ajaxious.baseFetchOptions`
+Is used to get base fetch options.
+
 
 #### `Ajaxious.addEventListener`
 Is used to add an event listener on an event type.

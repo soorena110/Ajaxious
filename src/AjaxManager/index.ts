@@ -1,12 +1,13 @@
 import {EventManager} from "../Base/Events";
 import {
-    AjaxOptions,
     AjaxBody,
+    ajaxEmpty,
+    AjaxiousEventHandler,
+    AjaxiousEventTypes,
+    AjaxOptions,
     AjaxRequest,
     AjaxResult,
-    AjaxStatus,
-    AjaxiousEventHandler,
-    AjaxiousEventTypes, ajaxEmpty
+    AjaxStatus
 } from "../models";
 import {sendRequestOrFetch} from "../Base/sendRequestFunctions";
 
@@ -30,8 +31,8 @@ export default class AjaxManager {
         return this._basePath;
     }
 
-    private _baseHeaders: HeadersInit = {};
-    set baseHeaders(header: HeadersInit) {
+    private _baseHeaders: HeadersInit | any = {};
+    set baseHeaders(header: HeadersInit | any) {
         this._baseHeaders = header;
     }
 
@@ -116,6 +117,5 @@ export default class AjaxManager {
         this._eventHandler.trigger(`on${result.status}`, ...eventArgs);
         this._eventHandler.trigger(`on${Number(result.status / 100)}xx`, ...eventArgs)
     }
-
 }
 
