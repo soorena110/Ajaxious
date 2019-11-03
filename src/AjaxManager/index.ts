@@ -1,4 +1,3 @@
-import {EventManager} from "../Base/Events";
 import {
     AjaxBody,
     ajaxEmpty,
@@ -10,10 +9,11 @@ import {
     AjaxStatus
 } from "../models";
 import {sendRequestOrFetch} from "../Base/sendRequestFunctions";
+import {EventManager} from "azi-tools";
 
 export default class AjaxManager {
 
-    private _eventHandler = new EventManager();
+    private _eventHandler = new EventManager<AjaxiousEventHandler, AjaxiousEventTypes>("Ajaxious");
 
     public setAllLogOptions(enabled: boolean) {
         (window as any).$trace.ajax.setAllLogsEnablity(enabled);

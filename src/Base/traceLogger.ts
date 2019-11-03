@@ -1,4 +1,4 @@
-import {TraceLogger} from "web-event";
+import {TraceLogger} from 'azi-tools';
 
 const loggerKeys = ['get', 'post', 'put', 'delete'];
 const defaultValues = [false, false, false, false];
