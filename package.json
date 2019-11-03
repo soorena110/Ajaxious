@@ -1,6 +1,6 @@
 {
   "name": "ajaxious",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
