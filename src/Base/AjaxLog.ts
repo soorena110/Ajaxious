@@ -9,7 +9,7 @@ function wordSudoColor(str: string) {
 }
 
 export function logAjaxRequestResult(url: string, method: string, res: Response, data: any, info: any) {
-    if (traceLogger.get(method.toLowerCase()))
+    if (!traceLogger.get(method.toLowerCase()))
         return;
 
     const isError = data == undefined;
