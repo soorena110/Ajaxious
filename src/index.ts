@@ -1,6 +1,5 @@
 import 'whatwg-fetch'
 import 'promise-polyfill/src/polyfill';
-
 import AjaxManager from "./AjaxManager/index";
 
 export {AjaxManager};

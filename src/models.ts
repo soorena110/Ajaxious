@@ -6,10 +6,17 @@ export enum AjaxStatus {
     unAuthorized = 401
 }
 
-export interface AjaxResult {
+export interface AjaxiousResponse {
     status: AjaxStatus;
     data: any;
     response: Response;
+
+    is1xx?: true;
+    is2xx?: true;
+    is3xx?: true;
+    is4xx?: true;
+    is5xx?: true;
+    isSuccess: boolean;
 }
 
 export type AjaxOptions = {
@@ -30,7 +37,7 @@ export interface AjaxRequest {
 
 export type AjaxBody = object | FormData;
 
-export type AjaxiousEventHandler = (request: AjaxRequest, result: AjaxResult) => void;
+export type AjaxiousEventHandler = (request: AjaxRequest, result: AjaxiousResponse) => void;
 
 export type AjaxiousEventTypes =
     'onRequesting'
@@ -42,6 +49,6 @@ export type AjaxiousEventTypes =
 
 export type AjaxiousMethodTypes = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH' | string;
 
-export const ajaxEmpty = {status: AjaxStatus.notSent, data: {}} as AjaxResult;
+export const ajaxEmpty = {status: AjaxStatus.notSent, data: {}} as AjaxiousResponse;
 export const ajaxEmptyPromise = new Promise((resolve) => resolve(ajaxEmpty));
 

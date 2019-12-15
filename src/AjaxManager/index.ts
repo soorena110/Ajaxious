@@ -5,7 +5,7 @@ import {
     AjaxiousEventTypes,
     AjaxOptions,
     AjaxRequest,
-    AjaxResult,
+    AjaxiousResponse,
     AjaxStatus
 } from "../models";
 import {sendRequestOrFetch} from "../Base/sendRequestFunctions";
@@ -17,7 +17,7 @@ export default class AjaxManager {
 
     public setAllLogOptions(enabled: boolean) {
         if (window)
-            (window as any).$trace.ajax.setAllLogsEnablity(enabled);
+        (window as any).$trace.ajax.setAllLogsEnablity(enabled);
     }
 
     private _basePath = '';
@@ -80,7 +80,7 @@ export default class AjaxManager {
     }
 
     public async request(request: AjaxRequest) {
-        let result: AjaxResult = ajaxEmpty;
+        let result: AjaxiousResponse = ajaxEmpty;
 
         if (!request.options || !request.options.dontTriggerEvents)
             this._eventHandler.trigger('onRequesting', request, result);
@@ -88,14 +88,14 @@ export default class AjaxManager {
         try {
             result = await sendRequestOrFetch(this._basePath, this.baseHeaders, this.baseFetchOptions, request);
             this.raiseEvents(request, result);
-            return result as AjaxResult;
+            return result as AjaxiousResponse;
         } catch (error) {
             console.error('Ajaxious has error !', error);
             const result = {
                 status: AjaxStatus.error,
                 data: {},
                 response: error
-            } as AjaxResult;
+            } as AjaxiousResponse;
             this._eventHandler.trigger('onError', request, result);
             return result
         } finally {
@@ -104,7 +104,7 @@ export default class AjaxManager {
         }
     }
 
-    public raiseEvents(request: AjaxRequest, result: AjaxResult) {
+    public raiseEvents(request: AjaxRequest, result: AjaxiousResponse) {
         if (request.options && request.options.dontTriggerEvents)
             return;
 

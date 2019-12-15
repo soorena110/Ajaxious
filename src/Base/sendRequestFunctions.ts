@@ -1,11 +1,11 @@
-import {AjaxOptions, AjaxRequest, AjaxResult, AjaxiousMethodTypes} from "../models";
+import {AjaxiousMethodTypes, AjaxiousResponse, AjaxOptions, AjaxRequest} from "../models";
 import {logAjaxRequestResult} from "./AjaxLog";
 
 export const sendRequestOrFetch = async (
     basePath: string,
     baseHeaders: HeadersInit,
     baseFetchOptions: RequestInit,
-    request: AjaxRequest): Promise<AjaxResult> => {
+    request: AjaxRequest): Promise<AjaxiousResponse> => {
 
     const completeUrl = getCompleteUrl(basePath, request.url, request.params);
     const body = getAjaxBody(request.method, request.body);
@@ -20,7 +20,13 @@ export const sendRequestOrFetch = async (
     });
 
     const data = await getDataFromResponse(response);
-    const retObj = {status: response.status, data, response};
+    const statusCategory = Math.floor(response.status / 100);
+    const retObj: AjaxiousResponse = {
+        status: response.status, data, response,
+        isSuccess: [4, 5].indexOf(statusCategory) == -1
+    };
+    (retObj as any)[`is${statusCategory}xx`] = true;
+
 
     if (!request.options || !request.options.neverLog) {
         logAjaxRequestResult(request.url, request.method, response, data,
