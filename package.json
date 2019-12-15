@@ -1,6 +1,6 @@
 {
   "name": "ajaxious",
-  "version": "2.8.3",
+  "version": "2.8.4",
   "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -20,11 +20,9 @@
     "fetch",
     "axios",
     "ajaxious",
-    "easy ajax",
-    "wrapper",
-    "ajax wrapper",
     "fetch wrapper",
-    "axious wrapper"
+    "event driven request",
+    "aspect programing"
   ],
   "author": "MohammadReza Azarang",
   "license": "ISC",

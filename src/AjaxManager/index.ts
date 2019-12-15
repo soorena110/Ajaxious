@@ -16,7 +16,8 @@ export default class AjaxManager {
     private _eventHandler = new EventManager<AjaxiousEventHandler, AjaxiousEventTypes>("Ajaxious");
 
     public setAllLogOptions(enabled: boolean) {
-        (window as any).$trace.ajax.setAllLogsEnablity(enabled);
+        if (window)
+            (window as any).$trace.ajax.setAllLogsEnablity(enabled);
     }
 
     private _basePath = '';
