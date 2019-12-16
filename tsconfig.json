@@ -9,10 +9,12 @@
       "es6",
       "dom"
     ],
-    "jsx": "react",
     "outDir": "./dist",
+    "sourceMap": true,
+    "inlineSources": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": true
   },
   "exclude": [
     "node_modules"

@@ -2,7 +2,6 @@
 
 const path = require('path');
 const Webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env) => {
     return {
@@ -22,17 +21,17 @@ module.exports = (env) => {
         resolve: {
             extensions: ['*', '.ts', '.js']
         },
+        devtool: "source-map",
         output: {
             path: path.join(__dirname, './dist'),
             filename: 'index.js',
+            sourceMapFilename: "index.map.js",
             library: 'Ajaxious',
-            libraryTarget: "umd"
         },
         devServer: {
             contentBase: './src/_dev',
             hot: true
         },
-        plugins: [env.dev ? new Webpack.HotModuleReplacementPlugin() : new UglifyJsPlugin()]
+        plugins: env.dev && [new Webpack.HotModuleReplacementPlugin()]
     };
-
 };

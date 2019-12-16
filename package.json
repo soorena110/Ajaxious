@@ -1,6 +1,6 @@
 {
   "name": "ajaxious",
-  "version": "2.9.4",
+  "version": "2.9.6",
   "description": "It is easier to use 'ajaxious' instead of 'fetch' or 'axios'.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -8,8 +8,7 @@
     "clean": "rimraf dist",
     "start": "webpack-dev-server -d --env.dev",
     "build": "npm run clean & webpack -p --env.prod",
-    "postbuild": "tsc --emitDeclarationOnly --declaration",
-    "deploy": "npm run build & npm run postbuild & npm publish --access=public"
+    "deploy": "npm run build & npm publish --access=public"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,6 @@
     "awesome-typescript-loader": "^5.2.1",
     "rimraf": "^2.6.3",
     "typescript": "^3.4.5",
-    "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
     "webpack-dev-server": "^3.7.1"
